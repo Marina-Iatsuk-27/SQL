@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Данные из базы</title>
+</head>
+<body>
+  <h1>Данные из базы данных</h1>
+  <ul id="userList"></ul>
+  <button onclick="addIvan()">Добавить Имя </button>
+  <button onclick="clearTable()">Очистить таблицу</button>
+  <button onclick="deleteUser('Гоша')">Удалить Гошу</button>
+
+
+  <script>
+    fetch('http://localhost:3000/data')
+      .then(response => response.json())
+      .then(data => {
+        const userList = document.getElementById('userList');
+        data.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = `Имя: ${user.name}, Email: ${user.email}`;
+          userList.appendChild(li);
+        });
+      })
+      .catch(error => console.error('Ошибка при получении данных:', error));
+
+      function addIvan() {
+        console.log('i work');
+        fetch('http://localhost:3000/data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: 'Иван' })
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Ошибка:', error));
+
+      }
+  
+      function clearTable() {
+        console.log('clearTable works');
+        fetch('http://localhost:3000/data', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Ошибка:', error));
+
+
+      }
+  
+      function deleteUser(name) {
+  console.log(`Удаление пользователя: ${name}`);
+  fetch(`http://localhost:3000/data/${name}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch(error => console.error('Ошибка:', error));
+}
+
+  </script>
+</body>
+</html>
